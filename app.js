@@ -46,6 +46,7 @@ let currentPdf = null;
 let currentBook = null;
 let currentPage = 1;
 let scale = 1;
+let isReaderOnlyMode = false;
 
 const categories = ['Tất cả', ...new Set(books.map((b) => b.category))];
 
@@ -94,7 +95,10 @@ async function renderPage(pageNumber = 1) {
 
 async function openBook(book) {
   if (isDesktop()) {
-    window.open(book.file, '_blank', 'noopener,noreferrer');
+    const url = new URL(window.location.href);
+    url.searchParams.set('read', book.file);
+    url.searchParams.set('title', book.title);
+    window.open(url.toString(), '_blank', 'noopener,noreferrer');
     return;
   }
 
@@ -106,6 +110,32 @@ async function openBook(book) {
   currentPdf = await pdfjsLib.getDocument(book.file).promise;
   await renderPage(currentPage);
   reader.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function getBookFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const readFile = params.get('read');
+  if (!readFile) return null;
+  const title = params.get('title');
+  if (title) {
+    const matched = books.find((book) => book.title === title);
+    if (matched) return matched;
+  }
+  return books.find((book) => book.file === readFile) ?? {
+    title: title || 'Sách',
+    file: readFile
+  };
+}
+
+async function enterReaderOnlyMode(book) {
+  isReaderOnlyMode = true;
+  document.body.classList.add('reader-only-mode');
+  currentBook = book;
+  currentPage = 1;
+  scale = 1;
+  reader.hidden = false;
+  currentPdf = await pdfjsLib.getDocument(book.file).promise;
+  await renderPage(currentPage);
 }
 
 async function renderCover(file, mountEl) {
@@ -197,6 +227,11 @@ zoomOutBtn.addEventListener('click', async () => {
 });
 
 closeReaderBtn.addEventListener('click', () => {
+  if (isReaderOnlyMode) {
+    const cleanUrl = `${window.location.origin}${window.location.pathname}`;
+    window.location.replace(cleanUrl);
+    return;
+  }
   reader.hidden = true;
 });
 
@@ -212,3 +247,8 @@ window.addEventListener('resize', async () => {
 initTheme();
 renderCategoryBar();
 renderBooks();
+
+const urlBook = getBookFromUrl();
+if (urlBook) {
+  enterReaderOnlyMode(urlBook);
+}
