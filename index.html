@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tủ Sách PDF</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --primary: #1d4ed8;
+      --primary-soft: #dbeafe;
+      --border: #e5e7eb;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: linear-gradient(135deg, #eef2ff, var(--bg));
+      min-height: 100vh;
+    }
+
+    .container {
+      width: min(1100px, 92%);
+      margin: 48px auto;
+    }
+
+    .hero {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.7rem, 2.8vw, 2.4rem);
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .book-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .book-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+    }
+
+    .tag {
+      align-self: flex-start;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--primary);
+      background: var(--primary-soft);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .book-title {
+      margin: 0;
+      font-size: 1.08rem;
+      line-height: 1.4;
+    }
+
+    .book-desc {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+      flex-grow: 1;
+    }
+
+    .open-link {
+      display: inline-block;
+      text-decoration: none;
+      color: white;
+      background: var(--primary);
+      font-weight: 600;
+      border-radius: 10px;
+      padding: 10px 14px;
+      text-align: center;
+    }
+
+    .open-link:hover {
+      filter: brightness(1.05);
+    }
+
+    footer {
+      margin-top: 24px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    code {
+      background: #eef2ff;
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: #334155;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="hero">
+      <h1>📚 Thư viện sách PDF</h1>
+      <p class="subtitle">
+        Chọn một cuốn sách bên dưới để mở và đọc trực tiếp file PDF.
+        Mỗi nút <strong>Đọc ngay</strong> sẽ mở sách trong tab mới.
+      </p>
+    </section>
+
+    <section class="grid">
+      <article class="book-card">
+        <span class="tag">Kỹ năng</span>
+        <h2 class="book-title">Đắc Nhân Tâm</h2>
+        <p class="book-desc">
+          Cuốn sách kinh điển về nghệ thuật giao tiếp, thuyết phục và xây dựng quan hệ tích cực.
+        </p>
+        <a class="open-link" href="pdf/dac-nhan-tam.pdf" target="_blank" rel="noopener noreferrer">Đọc ngay</a>
+      </article>
+
+      <article class="book-card">
+        <span class="tag">Phát triển bản thân</span>
+        <h2 class="book-title">Nhà Giả Kim</h2>
+        <p class="book-desc">
+          Hành trình theo đuổi ước mơ và lắng nghe tiếng gọi của trái tim qua câu chuyện giàu cảm hứng.
+        </p>
+        <a class="open-link" href="pdf/nha-gia-kim.pdf" target="_blank" rel="noopener noreferrer">Đọc ngay</a>
+      </article>
+
+      <article class="book-card">
+        <span class="tag">Tư duy</span>
+        <h2 class="book-title">Tuần Làm Việc 4 Giờ</h2>
+        <p class="book-desc">
+          Gợi ý cách tối ưu công việc, quản lý thời gian và thiết kế lối sống hiệu quả hơn.
+        </p>
+        <a class="open-link" href="pdf/tuan-lam-viec-4-gio.pdf" target="_blank" rel="noopener noreferrer">Đọc ngay</a>
+      </article>
+
+      <article class="book-card">
+        <span class="tag">Khởi nghiệp</span>
+        <h2 class="book-title">Bí Mật Tư Duy Triệu Phú</h2>
+        <p class="book-desc">
+          Phân tích thói quen tài chính và tư duy giúp thay đổi góc nhìn về tiền bạc.
+        </p>
+        <a class="open-link" href="pdf/bi-mat-tu-duy-trieu-phu.pdf" target="_blank" rel="noopener noreferrer">Đọc ngay</a>
+      </article>
+    </section>
+
+    <footer>
+      ⚠️ Đảm bảo bạn đã đặt đúng các file PDF vào thư mục <code>pdf/</code> cùng cấp với file <code>index.html</code>.
+    </footer>
+  </main>
+</body>
+</html>
