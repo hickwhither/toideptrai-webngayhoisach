@@ -1,358 +1,42 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tủ Sách Trực Tuyến</title>
-  <style>
-    :root {
-      --bg: #f5f7fb;
-      --card: #ffffff;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --primary: #1d4ed8;
-      --primary-dark: #1e40af;
-      --border: #e5e7eb;
-      --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-      --chip: #eff6ff;
-      --chip-border: #bfdbfe;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: linear-gradient(140deg, #eef2ff, var(--bg) 35%);
-      color: var(--text);
-      line-height: 1.6;
-    }
-
-    header {
-      padding: 42px 20px 20px;
-      text-align: center;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(1.8rem, 3vw, 2.6rem);
-      color: #0f172a;
-    }
-
-    .subtitle {
-      margin: 10px auto 0;
-      color: var(--muted);
-      max-width: 860px;
-      font-size: 1rem;
-    }
-
-    main {
-      width: min(1200px, calc(100% - 32px));
-      margin: 0 auto 48px;
-    }
-
-    .toolbar {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 14px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .toolbar strong {
-      color: #0f172a;
-      margin-right: 4px;
-    }
-
-    .category-btn {
-      border: 1px solid var(--chip-border);
-      border-radius: 999px;
-      background: var(--chip);
-      color: #1e3a8a;
-      padding: 7px 12px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.2s ease;
-    }
-
-    .category-btn:hover,
-    .category-btn.active {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-    }
-
-    .book-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 18px;
-      margin-top: 20px;
-    }
-
-    .book-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      min-height: 360px;
-    }
-
-    .book-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.12);
-    }
-
-    .cover-wrap {
-      aspect-ratio: 4 / 3;
-      width: 100%;
-      overflow: hidden;
-      border-bottom: 1px solid var(--border);
-      background: #dbeafe;
-    }
-
-    .cover {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .content {
-      padding: 14px 14px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      flex: 1;
-    }
-
-    .title {
-      margin: 0;
-      font-size: 1.05rem;
-      line-height: 1.35;
-      min-height: 2.8em;
-    }
-
-    .meta {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.92rem;
-    }
-
-    .actions {
-      margin-top: auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .btn {
-      text-decoration: none;
-      border: 1px solid var(--primary);
-      color: var(--primary);
-      background: #fff;
-      text-align: center;
-      font-weight: 600;
-      padding: 9px 10px;
-      border-radius: 10px;
-      transition: all 0.2s ease;
-      cursor: pointer;
-    }
-
-    .btn:hover {
-      background: #eff6ff;
-    }
-
-    .btn.primary {
-      background: var(--primary);
-      color: #fff;
-    }
-
-    .btn.primary:hover { background: var(--primary-dark); }
-
-    .reader {
-      margin-top: 24px;
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    .reader-head {
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .reader-title {
-      margin: 0;
-      font-size: 1rem;
-    }
-
-    .reader iframe {
-      width: 100%;
-      height: min(78vh, 900px);
-      border: none;
-      background: #f8fafc;
-    }
-
-    .empty {
-      border: 1px dashed #cbd5e1;
-      background: #fff;
-      border-radius: 12px;
-      padding: 18px;
-      margin-top: 16px;
-      color: var(--muted);
-      text-align: center;
-    }
-
-    footer {
-      text-align: center;
-      color: #94a3b8;
-      font-size: 0.88rem;
-      padding: 16px;
-    }
-  </style>
+  <link rel="stylesheet" href="app.css" />
 </head>
 <body>
-  <header>
+  <header class="hero">
     <h1>📚 Tủ Sách Trực Tuyến</h1>
-    <p class="subtitle">
-      Ảnh bìa hiển thị phủ toàn bộ khung, có bộ lọc phân loại sách và trình đọc PDF ngay trong trang.
-    </p>
+    <p>Ảnh bìa lấy từ trang đầu PDF, có phân loại dạng sticky và trình đọc tối ưu cho điện thoại.</p>
   </header>
 
-  <main>
-    <section class="toolbar" id="category-toolbar"></section>
-    <section class="book-grid" id="book-grid"></section>
+  <main class="container">
+    <section id="category-bar" class="category-bar" aria-label="Phân loại sách"></section>
+    <section id="book-grid" class="book-grid" aria-live="polite"></section>
 
-    <section class="reader" id="reader" hidden>
+    <section id="reader" class="reader" hidden>
       <div class="reader-head">
-        <h2 class="reader-title" id="reader-title">Đang đọc</h2>
-        <a id="reader-open-new" class="btn" target="_blank" rel="noopener noreferrer">Mở tab mới</a>
+        <strong id="reader-title">Đang đọc</strong>
+        <div class="reader-actions">
+          <button id="close-reader" class="btn" type="button">Đóng</button>
+          <button id="prev-page" class="btn" type="button">◀</button>
+          <span id="page-info">1 / 1</span>
+          <button id="next-page" class="btn" type="button">▶</button>
+          <button id="zoom-out" class="btn" type="button">A-</button>
+          <button id="zoom-in" class="btn" type="button">A+</button>
+          <a id="open-new-tab" class="btn" target="_blank" rel="noopener noreferrer">Mở tab mới</a>
+        </div>
       </div>
-      <iframe id="reader-frame" title="PDF Reader"></iframe>
+      <div class="reader-canvas-wrap">
+        <canvas id="reader-canvas"></canvas>
+      </div>
     </section>
 
-    <p class="empty" id="empty-state" hidden>Không tìm thấy sách trong phân loại này.</p>
+    <p id="empty" class="empty" hidden>Không có sách trong phân loại này.</p>
   </main>
 
-  <footer>
-    © 2026 · Danh sách sách lấy từ thư mục <code>books/</code>.
-  </footer>
-
-  <script>
-    const books = [
-      {
-        title: 'Competitive Programming 3',
-        author: 'Steven Halim et al.',
-        category: 'Lập trình',
-        file: 'books/Competitive_Programming_3.pdf'
-      },
-      {
-        title: '13 Công Thức Tính Tổng Dãy Số',
-        author: 'Sưu tầm',
-        category: 'Toán học',
-        file: 'books/13-cong-thuc-tinh-tong-day-so.pdf'
-      }
-    ];
-
-    const grid = document.getElementById('book-grid');
-    const toolbar = document.getElementById('category-toolbar');
-    const reader = document.getElementById('reader');
-    const readerTitle = document.getElementById('reader-title');
-    const readerFrame = document.getElementById('reader-frame');
-    const readerOpenNew = document.getElementById('reader-open-new');
-    const emptyState = document.getElementById('empty-state');
-
-    const categories = ['Tất cả', ...new Set(books.map((book) => book.category))];
-    let activeCategory = 'Tất cả';
-
-    function createCoverDataUrl(title, category) {
-      const safeTitle = title.replace(/&/g, '&amp;').replace(/</g, '&lt;');
-      const safeCategory = category.replace(/&/g, '&amp;').replace(/</g, '&lt;');
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
-        <defs>
-          <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-            <stop offset="0%" stop-color="#1d4ed8"/>
-            <stop offset="100%" stop-color="#0ea5e9"/>
-          </linearGradient>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#g)"/>
-        <text x="50%" y="44%" text-anchor="middle" fill="#ffffff" font-size="40" font-family="Segoe UI, Arial" font-weight="700">${safeTitle}</text>
-        <text x="50%" y="58%" text-anchor="middle" fill="#dbeafe" font-size="28" font-family="Segoe UI, Arial">${safeCategory}</text>
-      </svg>`;
-      return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-    }
-
-    function renderToolbar() {
-      toolbar.innerHTML = `<strong>Phân loại:</strong>`;
-      categories.forEach((category) => {
-        const button = document.createElement('button');
-        button.className = `category-btn ${category === activeCategory ? 'active' : ''}`;
-        button.textContent = category;
-        button.type = 'button';
-        button.addEventListener('click', () => {
-          activeCategory = category;
-          renderToolbar();
-          renderBooks();
-        });
-        toolbar.appendChild(button);
-      });
-    }
-
-    function openReader(book) {
-      reader.hidden = false;
-      readerTitle.textContent = `Đang đọc: ${book.title}`;
-      readerFrame.src = book.file;
-      readerOpenNew.href = book.file;
-      reader.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    function renderBooks() {
-      const filtered = activeCategory === 'Tất cả'
-        ? books
-        : books.filter((book) => book.category === activeCategory);
-
-      grid.innerHTML = '';
-      emptyState.hidden = filtered.length > 0;
-
-      filtered.forEach((book) => {
-        const card = document.createElement('article');
-        card.className = 'book-card';
-
-        card.innerHTML = `
-          <div class="cover-wrap">
-            <img class="cover" src="${createCoverDataUrl(book.title, book.category)}" alt="Bìa sách ${book.title}" />
-          </div>
-          <div class="content">
-            <h2 class="title">${book.title}</h2>
-            <p class="meta">${book.author} · ${book.category}</p>
-            <div class="actions">
-              <button class="btn primary" type="button">Đọc ngay</button>
-              <a class="btn" href="${book.file}" target="_blank" rel="noopener noreferrer">Mở PDF</a>
-            </div>
-          </div>
-        `;
-
-        card.querySelector('.btn.primary').addEventListener('click', () => openReader(book));
-        grid.appendChild(card);
-      });
-    }
-
-    renderToolbar();
-    renderBooks();
-  </script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
