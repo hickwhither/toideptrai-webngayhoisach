@@ -47,7 +47,7 @@ body {
   max-width: 920px;
   margin: 0 auto;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
   gap: 10px;
 }
@@ -149,6 +149,10 @@ body {
 .btn.primary:hover { background: var(--primary-d); }
 .theme-toggle { white-space: nowrap; }
 
+.reader[hidden] {
+  display: none !important;
+}
+
 .reader {
   margin-top: 16px;
   background: var(--card);
@@ -206,7 +210,6 @@ body {
   .container { width: calc(100% - 12px); }
   .hero { padding-top: 20px; }
   .hero-top {
-    flex-direction: column;
     align-items: stretch;
   }
 
