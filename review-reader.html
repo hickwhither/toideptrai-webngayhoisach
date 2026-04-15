@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đọc review</title>
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <main class="review-standalone">
+    <header class="review-standalone-header">
+      <h1 id="review-title">Đọc review</h1>
+      <p id="review-meta" class="meta"></p>
+    </header>
+    <article id="review-content" class="review-text review-standalone-content">
+      Đang tải review...
+    </article>
+  </main>
+
+  <script type="module">
+    import { mountStandaloneReviewReader } from './js/review-reader.js';
+
+    mountStandaloneReviewReader({
+      title: document.getElementById('review-title'),
+      meta: document.getElementById('review-meta'),
+      content: document.getElementById('review-content'),
+    });
+  </script>
+</body>
+</html>

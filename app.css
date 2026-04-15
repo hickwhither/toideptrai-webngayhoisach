@@ -338,6 +338,24 @@ body[data-theme='dark'] .review-text > div {
   min-height: calc(100vh - 180px);
 }
 
+.review-standalone {
+  width: min(980px, calc(100% - 24px));
+  margin: 16px auto 32px;
+}
+
+.review-standalone-header {
+  margin-bottom: 12px;
+}
+
+.review-standalone-header h1 {
+  margin: 0;
+  font-size: clamp(1.2rem, 2.4vw, 1.8rem);
+}
+
+.review-standalone-content {
+  margin: 0;
+}
+
 @media (max-width: 768px) {
   .pdf-nav {
     justify-content: flex-start;

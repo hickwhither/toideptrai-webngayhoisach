@@ -46,6 +46,10 @@ function initTheme() {
   applyTheme(localStorage.getItem('theme') || 'light');
 }
 
+function getCurrentTheme() {
+  return document.body.dataset.theme || localStorage.getItem('theme') || 'light';
+}
+
 function renderCategoryBar() {
   categoryBar.innerHTML = '';
   categoryBar.classList.toggle('compact', isCategoryCompact);
@@ -177,7 +181,12 @@ async function openBook(book) {
   }
 
   if (!window.matchMedia(MOBILE_MEDIA_QUERY).matches) {
-    window.open(encodeURI(reviewFile), '_blank', 'noopener,noreferrer');
+    const url = new URL('./review-reader.html', window.location.href);
+    url.searchParams.set('file', reviewFile);
+    url.searchParams.set('title', book.title);
+    url.searchParams.set('meta', `${book.author} · ${book.category}`);
+    url.searchParams.set('theme', getCurrentTheme());
+    window.open(url.toString(), '_blank', 'noopener,noreferrer');
     return;
   }
 
