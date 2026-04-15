@@ -14,11 +14,11 @@
       --primary-dark: #1e40af;
       --border: #e5e7eb;
       --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      --chip: #eff6ff;
+      --chip-border: #bfdbfe;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -29,7 +29,7 @@
     }
 
     header {
-      padding: 48px 20px 24px;
+      padding: 42px 20px 20px;
       text-align: center;
     }
 
@@ -40,22 +40,56 @@
     }
 
     .subtitle {
-      margin: 12px auto 0;
+      margin: 10px auto 0;
       color: var(--muted);
-      max-width: 760px;
+      max-width: 860px;
       font-size: 1rem;
     }
 
     main {
-      width: min(1100px, calc(100% - 32px));
+      width: min(1200px, calc(100% - 32px));
       margin: 0 auto 48px;
+    }
+
+    .toolbar {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .toolbar strong {
+      color: #0f172a;
+      margin-right: 4px;
+    }
+
+    .category-btn {
+      border: 1px solid var(--chip-border);
+      border-radius: 999px;
+      background: var(--chip);
+      color: #1e3a8a;
+      padding: 7px 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .category-btn:hover,
+    .category-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
     }
 
     .book-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 18px;
-      margin-top: 22px;
+      margin-top: 20px;
     }
 
     .book-card {
@@ -67,6 +101,7 @@
       display: flex;
       flex-direction: column;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
+      min-height: 360px;
     }
 
     .book-card:hover {
@@ -74,29 +109,33 @@
       box-shadow: 0 16px 30px rgba(0, 0, 0, 0.12);
     }
 
+    .cover-wrap {
+      aspect-ratio: 4 / 3;
+      width: 100%;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      background: #dbeafe;
+    }
+
     .cover {
-      height: 170px;
-      background: linear-gradient(160deg, #dbeafe, #bfdbfe 40%, #93c5fd);
-      display: grid;
-      place-items: center;
-      color: #1e3a8a;
-      font-size: 3rem;
-      font-weight: 700;
-      letter-spacing: 2px;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .content {
-      padding: 16px 16px 18px;
+      padding: 14px 14px 16px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
       flex: 1;
     }
 
     .title {
       margin: 0;
       font-size: 1.05rem;
-      line-height: 1.4;
+      line-height: 1.35;
       min-height: 2.8em;
     }
 
@@ -104,33 +143,78 @@
       margin: 0;
       color: var(--muted);
       font-size: 0.92rem;
-      min-height: 2.7em;
     }
 
-    .open-btn {
+    .actions {
       margin-top: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .btn {
       text-decoration: none;
-      background: var(--primary);
-      color: #fff;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      background: #fff;
       text-align: center;
       font-weight: 600;
-      padding: 10px 12px;
+      padding: 9px 10px;
       border-radius: 10px;
-      transition: background-color 0.2s ease;
+      transition: all 0.2s ease;
+      cursor: pointer;
     }
 
-    .open-btn:hover {
-      background: var(--primary-dark);
+    .btn:hover {
+      background: #eff6ff;
     }
 
-    .note {
+    .btn.primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn.primary:hover { background: var(--primary-dark); }
+
+    .reader {
       margin-top: 24px;
-      font-size: 0.92rem;
-      color: var(--muted);
       background: #fff;
-      border: 1px dashed #cbd5e1;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .reader-head {
       padding: 12px 14px;
-      border-radius: 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .reader-title {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .reader iframe {
+      width: 100%;
+      height: min(78vh, 900px);
+      border: none;
+      background: #f8fafc;
+    }
+
+    .empty {
+      border: 1px dashed #cbd5e1;
+      background: #fff;
+      border-radius: 12px;
+      padding: 18px;
+      margin-top: 16px;
+      color: var(--muted);
+      text-align: center;
     }
 
     footer {
@@ -145,74 +229,130 @@
   <header>
     <h1>📚 Tủ Sách Trực Tuyến</h1>
     <p class="subtitle">
-      Chọn một cuốn sách bên dưới để đọc ngay. Khi bấm <strong>“Mở PDF”</strong>, tài liệu sẽ được mở trong tab mới.
+      Ảnh bìa hiển thị phủ toàn bộ khung, có bộ lọc phân loại sách và trình đọc PDF ngay trong trang.
     </p>
   </header>
 
   <main>
-    <section class="book-grid">
-      <article class="book-card">
-        <div class="cover">01</div>
-        <div class="content">
-          <h2 class="title">Đắc Nhân Tâm</h2>
-          <p class="meta">Dale Carnegie · Kỹ năng sống</p>
-          <a class="open-btn" href="pdfs/dac-nhan-tam.pdf" target="_blank" rel="noopener noreferrer">Mở PDF</a>
-        </div>
-      </article>
+    <section class="toolbar" id="category-toolbar"></section>
+    <section class="book-grid" id="book-grid"></section>
 
-      <article class="book-card">
-        <div class="cover">02</div>
-        <div class="content">
-          <h2 class="title">Nhà Giả Kim</h2>
-          <p class="meta">Paulo Coelho · Tiểu thuyết</p>
-          <a class="open-btn" href="pdfs/nha-gia-kim.pdf" target="_blank" rel="noopener noreferrer">Mở PDF</a>
-        </div>
-      </article>
-
-      <article class="book-card">
-        <div class="cover">03</div>
-        <div class="content">
-          <h2 class="title">Tuổi Trẻ Đáng Giá Bao Nhiêu?</h2>
-          <p class="meta">Rosie Nguyễn · Phát triển bản thân</p>
-          <a class="open-btn" href="pdfs/tuoi-tre-dang-gia-bao-nhieu.pdf" target="_blank" rel="noopener noreferrer">Mở PDF</a>
-        </div>
-      </article>
-
-      <article class="book-card">
-        <div class="cover">04</div>
-        <div class="content">
-          <h2 class="title">Sapiens: Lược Sử Loài Người</h2>
-          <p class="meta">Yuval Noah Harari · Khoa học xã hội</p>
-          <a class="open-btn" href="pdfs/sapiens-luoc-su-loai-nguoi.pdf" target="_blank" rel="noopener noreferrer">Mở PDF</a>
-        </div>
-      </article>
-
-      <article class="book-card">
-        <div class="cover">05</div>
-        <div class="content">
-          <h2 class="title">Đi Tìm Lẽ Sống</h2>
-          <p class="meta">Viktor E. Frankl · Tâm lý học</p>
-          <a class="open-btn" href="pdfs/di-tim-le-song.pdf" target="_blank" rel="noopener noreferrer">Mở PDF</a>
-        </div>
-      </article>
-
-      <article class="book-card">
-        <div class="cover">06</div>
-        <div class="content">
-          <h2 class="title">Bố Già</h2>
-          <p class="meta">Mario Puzo · Tiểu thuyết</p>
-          <a class="open-btn" href="pdfs/bo-gia.pdf" target="_blank" rel="noopener noreferrer">Mở PDF</a>
-        </div>
-      </article>
+    <section class="reader" id="reader" hidden>
+      <div class="reader-head">
+        <h2 class="reader-title" id="reader-title">Đang đọc</h2>
+        <a id="reader-open-new" class="btn" target="_blank" rel="noopener noreferrer">Mở tab mới</a>
+      </div>
+      <iframe id="reader-frame" title="PDF Reader"></iframe>
     </section>
 
-    <p class="note">
-      Gợi ý: hãy đặt các tệp PDF vào thư mục <code>pdfs/</code> cùng cấp với file <code>index.html</code>, đúng theo tên trong từng liên kết để mở được sách.
-    </p>
+    <p class="empty" id="empty-state" hidden>Không tìm thấy sách trong phân loại này.</p>
   </main>
 
   <footer>
-    © 2026 · Thiết kế HTML thuần, dễ tùy biến và triển khai nhanh.
+    © 2026 · Danh sách sách lấy từ thư mục <code>books/</code>.
   </footer>
+
+  <script>
+    const books = [
+      {
+        title: 'Competitive Programming 3',
+        author: 'Steven Halim et al.',
+        category: 'Lập trình',
+        file: 'books/Competitive_Programming_3.pdf'
+      },
+      {
+        title: '13 Công Thức Tính Tổng Dãy Số',
+        author: 'Sưu tầm',
+        category: 'Toán học',
+        file: 'books/13-cong-thuc-tinh-tong-day-so.pdf'
+      }
+    ];
+
+    const grid = document.getElementById('book-grid');
+    const toolbar = document.getElementById('category-toolbar');
+    const reader = document.getElementById('reader');
+    const readerTitle = document.getElementById('reader-title');
+    const readerFrame = document.getElementById('reader-frame');
+    const readerOpenNew = document.getElementById('reader-open-new');
+    const emptyState = document.getElementById('empty-state');
+
+    const categories = ['Tất cả', ...new Set(books.map((book) => book.category))];
+    let activeCategory = 'Tất cả';
+
+    function createCoverDataUrl(title, category) {
+      const safeTitle = title.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+      const safeCategory = category.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+        <defs>
+          <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stop-color="#1d4ed8"/>
+            <stop offset="100%" stop-color="#0ea5e9"/>
+          </linearGradient>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#g)"/>
+        <text x="50%" y="44%" text-anchor="middle" fill="#ffffff" font-size="40" font-family="Segoe UI, Arial" font-weight="700">${safeTitle}</text>
+        <text x="50%" y="58%" text-anchor="middle" fill="#dbeafe" font-size="28" font-family="Segoe UI, Arial">${safeCategory}</text>
+      </svg>`;
+      return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+    }
+
+    function renderToolbar() {
+      toolbar.innerHTML = `<strong>Phân loại:</strong>`;
+      categories.forEach((category) => {
+        const button = document.createElement('button');
+        button.className = `category-btn ${category === activeCategory ? 'active' : ''}`;
+        button.textContent = category;
+        button.type = 'button';
+        button.addEventListener('click', () => {
+          activeCategory = category;
+          renderToolbar();
+          renderBooks();
+        });
+        toolbar.appendChild(button);
+      });
+    }
+
+    function openReader(book) {
+      reader.hidden = false;
+      readerTitle.textContent = `Đang đọc: ${book.title}`;
+      readerFrame.src = book.file;
+      readerOpenNew.href = book.file;
+      reader.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function renderBooks() {
+      const filtered = activeCategory === 'Tất cả'
+        ? books
+        : books.filter((book) => book.category === activeCategory);
+
+      grid.innerHTML = '';
+      emptyState.hidden = filtered.length > 0;
+
+      filtered.forEach((book) => {
+        const card = document.createElement('article');
+        card.className = 'book-card';
+
+        card.innerHTML = `
+          <div class="cover-wrap">
+            <img class="cover" src="${createCoverDataUrl(book.title, book.category)}" alt="Bìa sách ${book.title}" />
+          </div>
+          <div class="content">
+            <h2 class="title">${book.title}</h2>
+            <p class="meta">${book.author} · ${book.category}</p>
+            <div class="actions">
+              <button class="btn primary" type="button">Đọc ngay</button>
+              <a class="btn" href="${book.file}" target="_blank" rel="noopener noreferrer">Mở PDF</a>
+            </div>
+          </div>
+        `;
+
+        card.querySelector('.btn.primary').addEventListener('click', () => openReader(book));
+        grid.appendChild(card);
+      });
+    }
+
+    renderToolbar();
+    renderBooks();
+  </script>
 </body>
 </html>
