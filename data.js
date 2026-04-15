@@ -1,21 +1,23 @@
 export const books = {
-  'Kỹ năng sống': [
-    ['Đắc Nhâm Tâm', 'Dale Carnegie'],
-    ['Dám nghĩ lớn', 'David J. Schwartz'],
-    ['Đọc vị bất kỳ ai', 'David J. Lieberman'],
-    ['Tuổi trẻ đáng giá bao nhiêu', 'Rosie Nguyễn'],
-    ['Tư duy tích cực tạo thành công', 'Napoleon Hill & W. Clement Stone'],
-    ['Ngày xưa có một con bò', 'Camilo Cruz'],
-    ['Trên đường băng', 'Tony Buổi Sáng'],
-    ['Sống và suy ngẫm', 'V.N. Kakar'],
-    ['Quảng gánh lo đi và vui sống', 'Dale Carnegie']
+  'Nghệ thuật Sống & Giao tiếp': [
+    ['Đắc Nhân Tâm', 'Dale Carnegie'],
+    ['Đọc Vị Bất Kỳ Ai', 'David J. Lieberman'],
+    ['Quẳng Gánh Lo Đi Và Vui Sống', 'Dale Carnegie']
   ],
-  'Tiểu thuyết': [
-    ['Nhà giả kim', 'Paulo Coelho']
+  'Tư duy Thành công & Phát triển Bản thân': [
+    ['Dám Nghĩ Lớn', 'David J. Schwartz'],
+    ['Tư Duy Tích Cực Tạo Thành Công', 'Napoleon Hill & W. Clement Stone'],
+    ['Ngày Xưa Có Một Con Bò', 'Camilo Cruz']
   ],
-  'Kinh điển': [
-    ['Những ngày thơ ấu', 'Nguyên Hồng'],
-    ['Hoàng tử bé', 'Antoine de Saint-Exupéry'],
-    ['Không gia đình', 'Hector Malot']
+  'Cảm hứng Tuổi trẻ & Dẫn lối': [
+    ['Tuổi Trẻ Đáng Giá Bao Nhiêu?', 'Rosie Nguyễn'],
+    ['Trên Đường Băng', 'Tony Buổi Sáng'],
+    ['Nhà Giả Kim', 'Paulo Coelho']
+  ],
+  'Văn học Kinh điển & Nuôi dưỡng Tâm hồn': [
+    ['Những Ngày Thơ Ấu', 'Nguyên Hồng'],
+    ['Hoàng Tử Bé', 'Antoine de Saint-Exupéry'],
+    ['Không Gia Đình', 'Hector Malot'],
+    ['Sống và Suy Ngẫm', 'V.N. Kakar']
   ]
 };
