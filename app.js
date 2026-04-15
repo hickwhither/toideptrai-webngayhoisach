@@ -109,8 +109,28 @@ function showReviewHtml(content) {
 
   const parser = new DOMParser();
   const doc = parser.parseFromString(content, 'text/html');
-  const bodyContent = doc.body?.innerHTML?.trim();
-  reviewText.innerHTML = bodyContent || content;
+  const body = doc.body;
+
+  if (!body) {
+    reviewText.innerHTML = content;
+    return;
+  }
+
+  const blockedTags = new Set(['META', 'STYLE', 'SCRIPT', 'LINK', 'TITLE']);
+  const nodes = Array.from(body.childNodes).filter((node) => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      return node.textContent?.trim();
+    }
+
+    return !blockedTags.has(node.nodeName);
+  });
+
+  if (!nodes.length) {
+    reviewText.textContent = 'File review trống.';
+    return;
+  }
+
+  reviewText.replaceChildren(...nodes);
 }
 
 async function openBook(book) {
