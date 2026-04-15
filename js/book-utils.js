@@ -6,6 +6,10 @@ export function normalizeTextForPath(text) {
     .replace(/Đ/g, 'D');
 }
 
+const RAW_GITHUB_BASE = 'https://raw.githubusercontent.com/hickwhither/toideptrai-webngayhoisach/master';
+const THUMBNAIL_BASE_URL = `${RAW_GITHUB_BASE}/thumbnail`;
+const BOOKS_BASE_URL = `${RAW_GITHUB_BASE}/books`;
+
 function getBookFileNameCandidates(title) {
   const rawName = title.trim();
   const normalizedName = normalizeTextForPath(rawName);
@@ -17,15 +21,26 @@ export function getThumbnailCandidates(title) {
   const rawName = title.trim();
   const normalizedName = normalizeTextForPath(rawName);
   const names = [...new Set([rawName, normalizedName])];
-  return names.flatMap((name) => extList.map((ext) => `thumbnail/${name}.${ext}`));
+  return names.flatMap((name) =>
+    extList.flatMap((ext) => [
+      `${THUMBNAIL_BASE_URL}/${name}.${ext}`,
+      `thumbnail/${name}.${ext}`,
+    ])
+  );
 }
 
 function getPdfCandidates(title) {
-  return getBookFileNameCandidates(title).map((name) => `books/${name}.pdf`);
+  return getBookFileNameCandidates(title).flatMap((name) => [
+    `${BOOKS_BASE_URL}/${name}.pdf`,
+    `books/${name}.pdf`,
+  ]);
 }
 
 function getReviewCandidates(title) {
-  return getBookFileNameCandidates(title).map((name) => `books/${name}.html`);
+  return getBookFileNameCandidates(title).flatMap((name) => [
+    `${BOOKS_BASE_URL}/${name}.html`,
+    `books/${name}.html`,
+  ]);
 }
 
 export function mapBooks(rawBooks) {
