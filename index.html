@@ -1,218 +1,42 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tủ Sách Trực Tuyến</title>
-  <style>
-    :root {
-      --bg: #f5f7fb;
-      --card: #ffffff;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --primary: #1d4ed8;
-      --primary-dark: #1e40af;
-      --border: #e5e7eb;
-      --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: linear-gradient(140deg, #eef2ff, var(--bg) 35%);
-      color: var(--text);
-      line-height: 1.6;
-    }
-
-    header {
-      padding: 48px 20px 24px;
-      text-align: center;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(1.8rem, 3vw, 2.6rem);
-      color: #0f172a;
-    }
-
-    .subtitle {
-      margin: 12px auto 0;
-      color: var(--muted);
-      max-width: 760px;
-      font-size: 1rem;
-    }
-
-    main {
-      width: min(1100px, calc(100% - 32px));
-      margin: 0 auto 48px;
-    }
-
-    .book-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 18px;
-      margin-top: 22px;
-    }
-
-    .book-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .book-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.12);
-    }
-
-    .cover {
-      height: 170px;
-      background: linear-gradient(160deg, #dbeafe, #bfdbfe 40%, #93c5fd);
-      display: grid;
-      place-items: center;
-      color: #1e3a8a;
-      font-size: 3rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-    }
-
-    .content {
-      padding: 16px 16px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      flex: 1;
-    }
-
-    .title {
-      margin: 0;
-      font-size: 1.05rem;
-      line-height: 1.4;
-      min-height: 2.8em;
-    }
-
-    .meta {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.92rem;
-      min-height: 2.7em;
-    }
-
-    .open-btn {
-      margin-top: auto;
-      text-decoration: none;
-      background: var(--primary);
-      color: #fff;
-      text-align: center;
-      font-weight: 600;
-      padding: 10px 12px;
-      border-radius: 10px;
-      transition: background-color 0.2s ease;
-    }
-
-    .open-btn:hover {
-      background: var(--primary-dark);
-    }
-
-    .note {
-      margin-top: 24px;
-      font-size: 0.92rem;
-      color: var(--muted);
-      background: #fff;
-      border: 1px dashed #cbd5e1;
-      padding: 12px 14px;
-      border-radius: 10px;
-    }
-
-    footer {
-      text-align: center;
-      color: #94a3b8;
-      font-size: 0.88rem;
-      padding: 16px;
-    }
-  </style>
+  <link rel="stylesheet" href="app.css" />
 </head>
 <body>
-  <header>
+  <header class="hero">
     <h1>📚 Tủ Sách Trực Tuyến</h1>
-    <p class="subtitle">
-      Chọn một cuốn sách bên dưới để đọc ngay. Khi bấm <strong>“Mở PDF”</strong>, tài liệu sẽ được mở trong tab mới.
-    </p>
+    <p>Ảnh bìa lấy từ trang đầu PDF, có phân loại dạng sticky và trình đọc tối ưu cho điện thoại.</p>
   </header>
 
-  <main>
-    <section class="book-grid">
-      <article class="book-card">
-        <div class="cover">01</div>
-        <div class="content">
-          <h2 class="title">Đắc Nhân Tâm</h2>
-          <p class="meta">Dale Carnegie · Kỹ năng sống</p>
-          <a class="open-btn" href="pdfs/dac-nhan-tam.pdf" target="_blank" rel="noopener noreferrer">Mở PDF</a>
-        </div>
-      </article>
+  <main class="container">
+    <section id="category-bar" class="category-bar" aria-label="Phân loại sách"></section>
+    <section id="book-grid" class="book-grid" aria-live="polite"></section>
 
-      <article class="book-card">
-        <div class="cover">02</div>
-        <div class="content">
-          <h2 class="title">Nhà Giả Kim</h2>
-          <p class="meta">Paulo Coelho · Tiểu thuyết</p>
-          <a class="open-btn" href="pdfs/nha-gia-kim.pdf" target="_blank" rel="noopener noreferrer">Mở PDF</a>
+    <section id="reader" class="reader" hidden>
+      <div class="reader-head">
+        <strong id="reader-title">Đang đọc</strong>
+        <div class="reader-actions">
+          <button id="close-reader" class="btn" type="button">Đóng</button>
+          <button id="prev-page" class="btn" type="button">◀</button>
+          <span id="page-info">1 / 1</span>
+          <button id="next-page" class="btn" type="button">▶</button>
+          <button id="zoom-out" class="btn" type="button">A-</button>
+          <button id="zoom-in" class="btn" type="button">A+</button>
+          <a id="open-new-tab" class="btn" target="_blank" rel="noopener noreferrer">Mở tab mới</a>
         </div>
-      </article>
-
-      <article class="book-card">
-        <div class="cover">03</div>
-        <div class="content">
-          <h2 class="title">Tuổi Trẻ Đáng Giá Bao Nhiêu?</h2>
-          <p class="meta">Rosie Nguyễn · Phát triển bản thân</p>
-          <a class="open-btn" href="pdfs/tuoi-tre-dang-gia-bao-nhieu.pdf" target="_blank" rel="noopener noreferrer">Mở PDF</a>
-        </div>
-      </article>
-
-      <article class="book-card">
-        <div class="cover">04</div>
-        <div class="content">
-          <h2 class="title">Sapiens: Lược Sử Loài Người</h2>
-          <p class="meta">Yuval Noah Harari · Khoa học xã hội</p>
-          <a class="open-btn" href="pdfs/sapiens-luoc-su-loai-nguoi.pdf" target="_blank" rel="noopener noreferrer">Mở PDF</a>
-        </div>
-      </article>
-
-      <article class="book-card">
-        <div class="cover">05</div>
-        <div class="content">
-          <h2 class="title">Đi Tìm Lẽ Sống</h2>
-          <p class="meta">Viktor E. Frankl · Tâm lý học</p>
-          <a class="open-btn" href="pdfs/di-tim-le-song.pdf" target="_blank" rel="noopener noreferrer">Mở PDF</a>
-        </div>
-      </article>
-
-      <article class="book-card">
-        <div class="cover">06</div>
-        <div class="content">
-          <h2 class="title">Bố Già</h2>
-          <p class="meta">Mario Puzo · Tiểu thuyết</p>
-          <a class="open-btn" href="pdfs/bo-gia.pdf" target="_blank" rel="noopener noreferrer">Mở PDF</a>
-        </div>
-      </article>
+      </div>
+      <div class="reader-canvas-wrap">
+        <canvas id="reader-canvas"></canvas>
+      </div>
     </section>
 
-    <p class="note">
-      Gợi ý: hãy đặt các tệp PDF vào thư mục <code>pdfs/</code> cùng cấp với file <code>index.html</code>, đúng theo tên trong từng liên kết để mở được sách.
-    </p>
+    <p id="empty" class="empty" hidden>Không có sách trong phân loại này.</p>
   </main>
 
-  <footer>
-    © 2026 · Thiết kế HTML thuần, dễ tùy biến và triển khai nhanh.
-  </footer>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
