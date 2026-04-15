@@ -6,7 +6,7 @@ export function normalizeTextForPath(text) {
     .replace(/Đ/g, 'D');
 }
 
-const RAW_GITHUB_BASE = 'https://raw.githubusercontent.com/hickwhither/toideptrai-webngayhoisach/master';
+const RAW_GITHUB_BASE = 'https://raw.githubusercontent.com/hickwhither/toideptrai-webngayhoisach/refs/heads/master/';
 const THUMBNAIL_BASE_URL = `${RAW_GITHUB_BASE}/thumbnail`;
 const BOOKS_BASE_URL = `${RAW_GITHUB_BASE}/books`;
 
