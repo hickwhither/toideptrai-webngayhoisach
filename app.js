@@ -30,6 +30,11 @@ const themeToggleBtn = document.getElementById('theme-toggle');
 const books = mapBooks(rawBooks);
 const categories = ['Tất cả', ...new Set(books.map((book) => book.category))];
 let activeCategory = 'Tất cả';
+let isCategoryCompact = false;
+let isCategoryExpanded = false;
+
+const MOBILE_MEDIA_QUERY = '(max-width: 768px)';
+const CATEGORY_COMPACT_SCROLL_Y = 80;
 
 function applyTheme(theme) {
   document.body.dataset.theme = theme;
@@ -41,10 +46,28 @@ function initTheme() {
   applyTheme(localStorage.getItem('theme') || 'light');
 }
 
+function getCurrentTheme() {
+  return document.body.dataset.theme || localStorage.getItem('theme') || 'light';
+}
+
 function renderCategoryBar() {
   categoryBar.innerHTML = '';
+  categoryBar.classList.toggle('compact', isCategoryCompact);
+  categoryBar.classList.toggle('expanded', isCategoryExpanded);
 
-  for (const category of categories) {
+  const hasOverflowCategories = categories.length > 4;
+  const collapsedCategories = hasOverflowCategories
+    ? [
+      'Tất cả',
+      ...categories.filter((category) => category !== 'Tất cả' && category === activeCategory),
+      ...categories.filter((category) => category !== 'Tất cả' && category !== activeCategory).slice(0, 2),
+    ]
+    : categories;
+  const categoriesToRender = isCategoryCompact && !isCategoryExpanded
+    ? Array.from(new Set(collapsedCategories))
+    : categories;
+
+  for (const category of categoriesToRender) {
     const button = document.createElement('button');
     button.className = `chip ${activeCategory === category ? 'active' : ''}`;
     button.type = 'button';
@@ -55,6 +78,19 @@ function renderCategoryBar() {
       renderBooks();
     });
     categoryBar.appendChild(button);
+  }
+
+  if (isCategoryCompact && hasOverflowCategories) {
+    const moreBtn = document.createElement('button');
+    moreBtn.type = 'button';
+    moreBtn.className = `chip more-chip ${isCategoryExpanded ? 'active' : ''}`;
+    moreBtn.setAttribute('aria-label', isCategoryExpanded ? 'Thu gọn thể loại' : 'Mở rộng thể loại');
+    moreBtn.textContent = isCategoryExpanded ? 'Thu gọn' : '⋯';
+    moreBtn.addEventListener('click', () => {
+      isCategoryExpanded = !isCategoryExpanded;
+      renderCategoryBar();
+    });
+    categoryBar.appendChild(moreBtn);
   }
 }
 
@@ -134,30 +170,43 @@ function showReviewHtml(content) {
 }
 
 async function openBook(book) {
+  const reviewFile = await findAvailableFile(book.reviewCandidates);
+  if (!reviewFile) {
+    reader.hidden = false;
+    readerTitle.textContent = book.title;
+    readerMeta.textContent = `${book.author} · ${book.category}`;
+    showReviewText('Không có file review .html cho sách này.');
+    reader.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+
+  if (!window.matchMedia(MOBILE_MEDIA_QUERY).matches) {
+    const url = new URL('./review-reader.html', window.location.href);
+    url.searchParams.set('file', reviewFile);
+    url.searchParams.set('title', book.title);
+    url.searchParams.set('meta', `${book.author} · ${book.category}`);
+    url.searchParams.set('theme', getCurrentTheme());
+    window.open(url.toString(), '_blank', 'noopener,noreferrer');
+    return;
+  }
+
   reader.hidden = false;
   readerTitle.textContent = book.title;
   readerMeta.textContent = `${book.author} · ${book.category}`;
   showReviewText('Đang tải nội dung...');
 
-  const pdfFile = await findAvailableFile(book.pdfCandidates);
-  if (pdfFile) {
-    showPdf(pdfFile);
-    reader.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    return;
-  }
-
   try {
-    const reviewFile = await findAvailableFile(book.reviewCandidates);
-    if (!reviewFile) throw new Error('missing review');
     const response = await fetch(reviewFile);
     if (!response.ok) throw new Error('missing review');
     const content = await response.text();
     showReviewHtml(content.trim() ? content : '<p>File review trống.</p>');
   } catch {
-    showReviewText('Không có file PDF hoặc review .html cho sách này.');
+    showReviewText('Không thể tải file review .html cho sách này.');
   }
 
+  reviewText.setAttribute('tabindex', '-1');
   reader.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  reviewText.focus({ preventScroll: true });
 }
 
 async function renderBookCard(book) {
@@ -169,7 +218,7 @@ async function renderBookCard(book) {
       <h3 class="title">${book.title}</h3>
       <p class="meta">${book.author} · ${book.category}</p>
       <div class="actions">
-        <button type="button" class="btn primary">Đọc sách</button>
+        <button type="button" class="btn primary">Đọc review</button>
       </div>
     </div>
   `;
@@ -196,6 +245,13 @@ closeReaderTextBtn.addEventListener('click', () => {
 });
 themeToggleBtn.addEventListener('click', () => {
   applyTheme(document.body.dataset.theme === 'dark' ? 'light' : 'dark');
+});
+window.addEventListener('scroll', () => {
+  const shouldCompact = window.scrollY > CATEGORY_COMPACT_SCROLL_Y;
+  if (shouldCompact === isCategoryCompact) return;
+  isCategoryCompact = shouldCompact;
+  isCategoryExpanded = false;
+  renderCategoryBar();
 });
 
 initTheme();
