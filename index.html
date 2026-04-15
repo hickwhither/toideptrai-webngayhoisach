@@ -12,7 +12,7 @@
       <h1>📚 Tủ Sách Trực Tuyến</h1>
       <button id="theme-toggle" class="btn theme-toggle" type="button">🌙 Dark mode</button>
     </div>
-    <p>Ảnh bìa lấy từ trang đầu PDF, có phân loại dạng sticky và trình đọc tối ưu cho điện thoại.</p>
+    <p>Ưu tiên đọc trực tiếp PDF nếu có sẵn, fallback sang review .txt khi cần.</p>
   </header>
 
   <main class="container">
@@ -20,17 +20,15 @@
     <section id="book-grid" class="book-grid" aria-live="polite"></section>
 
     <section id="reader" class="reader" hidden>
-      <div class="reader-canvas-wrap">
-        <canvas id="reader-canvas"></canvas>
+      <div class="reader-content">
+        <h2 id="reader-title"></h2>
+        <p id="reader-meta" class="meta"></p>
+        <iframe id="pdf-frame" class="pdf-frame" title="Trình đọc PDF" hidden></iframe>
+        <pre id="review-text" class="review-text" hidden></pre>
       </div>
       <div class="reader-actions-wrap">
         <div class="reader-actions">
           <button id="close-reader" class="btn" type="button">Đóng</button>
-          <button id="prev-page" class="btn" type="button">◀</button>
-          <span id="page-info">1 / 1</span>
-          <button id="next-page" class="btn" type="button">▶</button>
-          <button id="zoom-out" class="btn" type="button">A-</button>
-          <button id="zoom-in" class="btn" type="button">A+</button>
         </div>
       </div>
     </section>
@@ -38,6 +36,6 @@
     <p id="empty" class="empty" hidden>Không có sách trong phân loại này.</p>
   </main>
 
-  <script type="module" src="https://raw.githubusercontent.com/hickwhither/toideptrai-webngayhoisach/refs/heads/master/app.js"></script>
+  <script type="module" src="./app.js"></script>
 </body>
 </html>
