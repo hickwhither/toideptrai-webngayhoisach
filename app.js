@@ -106,7 +106,11 @@ function showReviewHtml(content) {
   pdfReader.close(false);
   reviewText.hidden = false;
   readerCloseWrap.hidden = false;
-  reviewText.innerHTML = content;
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(content, 'text/html');
+  const bodyContent = doc.body?.innerHTML?.trim();
+  reviewText.innerHTML = bodyContent || content;
 }
 
 async function openBook(book) {
