@@ -8,7 +8,10 @@
 </head>
 <body>
   <header class="hero">
-    <h1>📚 Tủ Sách Trực Tuyến</h1>
+    <div class="hero-top">
+      <h1>📚 Tủ Sách Trực Tuyến</h1>
+      <button id="theme-toggle" class="btn theme-toggle" type="button">🌙 Dark mode</button>
+    </div>
     <p>Ảnh bìa lấy từ trang đầu PDF, có phân loại dạng sticky và trình đọc tối ưu cho điện thoại.</p>
   </header>
 
@@ -17,8 +20,10 @@
     <section id="book-grid" class="book-grid" aria-live="polite"></section>
 
     <section id="reader" class="reader" hidden>
-      <div class="reader-head">
-        <strong id="reader-title">Đang đọc</strong>
+      <div class="reader-canvas-wrap">
+        <canvas id="reader-canvas"></canvas>
+      </div>
+      <div class="reader-actions-wrap">
         <div class="reader-actions">
           <button id="close-reader" class="btn" type="button">Đóng</button>
           <button id="prev-page" class="btn" type="button">◀</button>
@@ -26,17 +31,13 @@
           <button id="next-page" class="btn" type="button">▶</button>
           <button id="zoom-out" class="btn" type="button">A-</button>
           <button id="zoom-in" class="btn" type="button">A+</button>
-          <a id="open-new-tab" class="btn" target="_blank" rel="noopener noreferrer">Mở tab mới</a>
         </div>
-      </div>
-      <div class="reader-canvas-wrap">
-        <canvas id="reader-canvas"></canvas>
       </div>
     </section>
 
     <p id="empty" class="empty" hidden>Không có sách trong phân loại này.</p>
   </main>
 
-    <script type="module" src="app.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
