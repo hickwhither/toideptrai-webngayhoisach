@@ -234,3 +234,26 @@ body {
     backdrop-filter: blur(8px);
   }
 }
+
+@media (min-width: 769px) {
+  .reader-actions-wrap {
+    position: sticky;
+    top: 10px;
+    z-index: 35;
+    background: color-mix(in oklab, var(--card) 95%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+}
+
+body.reader-only-mode .hero,
+body.reader-only-mode #category-bar,
+body.reader-only-mode #book-grid,
+body.reader-only-mode #empty {
+  display: none !important;
+}
+
+body.reader-only-mode .container {
+  width: min(1240px, calc(100% - 16px));
+  margin-top: 10px;
+}
