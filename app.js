@@ -1,5 +1,5 @@
 import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.min.mjs';
-import { books } from './data/books/index.js';
+import { books as rawBooks } from './data.js';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.worker.min.mjs';
 
@@ -16,6 +16,30 @@ const nextBtn = document.getElementById('next-page');
 const zoomInBtn = document.getElementById('zoom-in');
 const zoomOutBtn = document.getElementById('zoom-out');
 const themeToggleBtn = document.getElementById('theme-toggle');
+
+const bookFileMap = {
+  'Đắc Nhâm Tâm': 'books/Đắc Nhâm Tâm.pdf',
+  'Dám nghĩ lớn': 'books/Dám nghĩ lớn.pdf',
+  'Đọc vị bất kỳ ai': 'books/Doc vi bat ky ai.pdf'
+};
+
+function resolveBookFile(title) {
+  return bookFileMap[title] ?? `books/${title}.pdf`;
+}
+
+function mapBooks(bookMap) {
+  return Object.entries(bookMap).flatMap(([category, items]) =>
+    items.map(([title, author]) => ({
+      category,
+      title,
+      author,
+      dataFile: `${title}.js`,
+      file: resolveBookFile(title)
+    }))
+  );
+}
+
+const books = mapBooks(rawBooks);
 
 let activeCategory = 'Tất cả';
 let currentPdf = null;
