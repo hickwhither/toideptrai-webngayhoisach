@@ -1,5 +1,6 @@
 import { books as rawBooks } from './data.js';
 import { findAvailableImage, getThumbnailCandidates, mapBooks } from './js/book-utils.js';
+import { createPdfReader } from './js/pdf-reader.js';
 
 const categoryBar = document.getElementById('category-bar');
 const bookGrid = document.getElementById('book-grid');
@@ -10,6 +11,15 @@ const readerMeta = document.getElementById('reader-meta');
 const reviewText = document.getElementById('review-text');
 const pdfFrame = document.getElementById('pdf-frame');
 const closeReaderBtn = document.getElementById('close-reader');
+const pdfNav = document.getElementById('pdf-nav');
+const prevPageBtn = document.getElementById('prev-page');
+const nextPageBtn = document.getElementById('next-page');
+const zoomOutBtn = document.getElementById('zoom-out');
+const zoomInBtn = document.getElementById('zoom-in');
+const pageLabel = document.getElementById('page-label');
+const zoomLabel = document.getElementById('zoom-label');
+const closeReaderTextBtn = document.getElementById('close-reader-text');
+const readerCloseWrap = document.getElementById('reader-close-wrap');
 const themeToggleBtn = document.getElementById('theme-toggle');
 
 const books = mapBooks(rawBooks);
@@ -56,16 +66,34 @@ async function buildCoverMarkup(title) {
   return '<div class="cover-fallback"><span>Không có thumbnail</span></div>';
 }
 
+const pdfReader = createPdfReader({
+  frame: pdfFrame,
+  nav: pdfNav,
+  closeBtn: closeReaderBtn,
+  prevBtn: prevPageBtn,
+  nextBtn: nextPageBtn,
+  zoomOutBtn: zoomOutBtn,
+  zoomInBtn: zoomInBtn,
+  pageLabel,
+  zoomLabel,
+  onClose: () => {
+    reader.hidden = true;
+  },
+});
+
 function showPdf(pdfPath) {
-  pdfFrame.hidden = false;
   reviewText.hidden = true;
-  pdfFrame.src = encodeURI(pdfPath);
+  readerCloseWrap.hidden = true;
+  const mode = pdfReader.open(pdfPath);
+  if (mode === 'new-page') {
+    reader.hidden = true;
+  }
 }
 
 function showReviewText(content) {
+  pdfReader.close(false);
   reviewText.hidden = false;
-  pdfFrame.hidden = true;
-  pdfFrame.src = '';
+  readerCloseWrap.hidden = false;
   reviewText.textContent = content;
 }
 
@@ -122,11 +150,11 @@ async function renderBooks() {
   }
 }
 
-closeReaderBtn.addEventListener('click', () => {
-  reader.hidden = true;
-  pdfFrame.src = '';
-});
 
+closeReaderTextBtn.addEventListener('click', () => {
+  reader.hidden = true;
+  pdfReader.close(false);
+});
 themeToggleBtn.addEventListener('click', () => {
   applyTheme(document.body.dataset.theme === 'dark' ? 'light' : 'dark');
 });
