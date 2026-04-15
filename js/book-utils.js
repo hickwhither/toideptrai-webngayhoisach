@@ -13,6 +13,10 @@ export function slugifyForFile(text) {
     .replace(/^-+|-+$/g, '');
 }
 
+const pdfOverrides = {
+  'Đọc vị bất kỳ ai': 'books/Doc vi bat ky ai.pdf'
+};
+
 export function getThumbnailCandidates(title) {
   const extList = ['jpg', 'jpeg', 'png', 'webp', 'avif'];
   const rawName = title.trim();
@@ -21,12 +25,17 @@ export function getThumbnailCandidates(title) {
   return names.flatMap((name) => extList.map((ext) => `thumbnail/${name}.${ext}`));
 }
 
+function getPdfPath(title) {
+  return pdfOverrides[title] ?? `books/${title}.pdf`;
+}
+
 export function mapBooks(rawBooks) {
   return Object.entries(rawBooks).flatMap(([category, items]) =>
     items.map(([title, author]) => ({
       category,
       title,
       author,
+      pdfFile: getPdfPath(title),
       reviewFile: `reviews/${slugifyForFile(title)}.txt`
     }))
   );

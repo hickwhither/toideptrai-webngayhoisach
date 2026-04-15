@@ -8,6 +8,7 @@ const reader = document.getElementById('reader');
 const readerTitle = document.getElementById('reader-title');
 const readerMeta = document.getElementById('reader-meta');
 const reviewText = document.getElementById('review-text');
+const pdfFrame = document.getElementById('pdf-frame');
 const closeReaderBtn = document.getElementById('close-reader');
 const themeToggleBtn = document.getElementById('theme-toggle');
 
@@ -28,7 +29,7 @@ function initTheme() {
 function renderCategoryBar() {
   categoryBar.innerHTML = '';
 
-  categories.forEach((category) => {
+  for (const category of categories) {
     const button = document.createElement('button');
     button.className = `chip ${activeCategory === category ? 'active' : ''}`;
     button.type = 'button';
@@ -39,7 +40,7 @@ function renderCategoryBar() {
       renderBooks();
     });
     categoryBar.appendChild(button);
-  });
+  }
 }
 
 function getVisibleBooks() {
@@ -52,31 +53,41 @@ async function buildCoverMarkup(title) {
   const thumbnail = await findAvailableImage(getThumbnailCandidates(title));
   if (thumbnail) return `<img alt="Bìa sách ${title}" src="${encodeURI(thumbnail)}">`;
 
-  return `
-    <div class="cover-fallback">
-      <span>Không có thumbnail</span>
-    </div>
-  `;
+  return '<div class="cover-fallback"><span>Không có thumbnail</span></div>';
+}
+
+function showPdf(pdfPath) {
+  pdfFrame.hidden = false;
+  reviewText.hidden = true;
+  pdfFrame.src = encodeURI(pdfPath);
+}
+
+function showReviewText(content) {
+  reviewText.hidden = false;
+  pdfFrame.hidden = true;
+  pdfFrame.src = '';
+  reviewText.textContent = content;
 }
 
 async function openBook(book) {
   reader.hidden = false;
   readerTitle.textContent = book.title;
   readerMeta.textContent = `${book.author} · ${book.category}`;
-  reviewText.textContent = 'Đang tải đoạn review...';
+  showReviewText('Đang tải nội dung...');
 
-  if (!book.reviewFile.endsWith('.txt')) {
-    reviewText.textContent = 'Chỉ hỗ trợ đọc file .txt (review sách), không mở PDF do bản quyền.';
+  if (book.pdfFile) {
+    showPdf(book.pdfFile);
+    reader.scrollIntoView({ behavior: 'smooth', block: 'start' });
     return;
   }
 
   try {
     const response = await fetch(book.reviewFile);
-    if (!response.ok) throw new Error('Không tìm thấy nội dung review');
+    if (!response.ok) throw new Error('missing review');
     const content = (await response.text()).trim();
-    reviewText.textContent = content || 'File review trống.';
+    showReviewText(content || 'File review trống.');
   } catch {
-    reviewText.textContent = 'Chưa có review cho sách này. Hãy thêm file .txt trong thư mục reviews/.';
+    showReviewText('Không có file PDF hoặc review .txt cho sách này.');
   }
 
   reader.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -91,15 +102,13 @@ async function renderBookCard(book) {
       <h3 class="title">${book.title}</h3>
       <p class="meta">${book.author} · ${book.category}</p>
       <div class="actions">
-        <button type="button" class="btn primary">Đọc review</button>
+        <button type="button" class="btn primary">Đọc sách</button>
       </div>
     </div>
   `;
 
-  const coverWrap = card.querySelector('.cover-wrap');
-  coverWrap.innerHTML = await buildCoverMarkup(book.title);
+  card.querySelector('.cover-wrap').innerHTML = await buildCoverMarkup(book.title);
   card.querySelector('.btn.primary').addEventListener('click', () => openBook(book));
-
   return card;
 }
 
@@ -109,13 +118,13 @@ async function renderBooks() {
   bookGrid.innerHTML = '';
 
   for (const book of visibleBooks) {
-    const card = await renderBookCard(book);
-    bookGrid.appendChild(card);
+    bookGrid.appendChild(await renderBookCard(book));
   }
 }
 
 closeReaderBtn.addEventListener('click', () => {
   reader.hidden = true;
+  pdfFrame.src = '';
 });
 
 themeToggleBtn.addEventListener('click', () => {
