@@ -1,5 +1,10 @@
 import { books as rawBooks } from './data.js';
-import { findAvailableImage, getThumbnailCandidates, mapBooks } from './js/book-utils.js';
+import {
+  findAvailableFile,
+  findAvailableImage,
+  getThumbnailCandidates,
+  mapBooks
+} from './js/book-utils.js';
 import { createPdfReader } from './js/pdf-reader.js';
 
 const categoryBar = document.getElementById('category-bar');
@@ -97,25 +102,35 @@ function showReviewText(content) {
   reviewText.textContent = content;
 }
 
+function showReviewHtml(content) {
+  pdfReader.close(false);
+  reviewText.hidden = false;
+  readerCloseWrap.hidden = false;
+  reviewText.innerHTML = content;
+}
+
 async function openBook(book) {
   reader.hidden = false;
   readerTitle.textContent = book.title;
   readerMeta.textContent = `${book.author} · ${book.category}`;
   showReviewText('Đang tải nội dung...');
 
-  if (book.pdfFile) {
-    showPdf(book.pdfFile);
+  const pdfFile = await findAvailableFile(book.pdfCandidates);
+  if (pdfFile) {
+    showPdf(pdfFile);
     reader.scrollIntoView({ behavior: 'smooth', block: 'start' });
     return;
   }
 
   try {
-    const response = await fetch(book.reviewFile);
+    const reviewFile = await findAvailableFile(book.reviewCandidates);
+    if (!reviewFile) throw new Error('missing review');
+    const response = await fetch(reviewFile);
     if (!response.ok) throw new Error('missing review');
-    const content = (await response.text()).trim();
-    showReviewText(content || 'File review trống.');
+    const content = await response.text();
+    showReviewHtml(content.trim() ? content : '<p>File review trống.</p>');
   } catch {
-    showReviewText('Không có file PDF hoặc review .txt cho sách này.');
+    showReviewText('Không có file PDF hoặc review .html cho sách này.');
   }
 
   reader.scrollIntoView({ behavior: 'smooth', block: 'start' });

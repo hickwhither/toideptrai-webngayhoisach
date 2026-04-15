@@ -6,16 +6,11 @@ export function normalizeTextForPath(text) {
     .replace(/Đ/g, 'D');
 }
 
-export function slugifyForFile(text) {
-  return normalizeTextForPath(text)
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+function getBookFileNameCandidates(title) {
+  const rawName = title.trim();
+  const normalizedName = normalizeTextForPath(rawName);
+  return [...new Set([rawName, normalizedName])];
 }
-
-const pdfOverrides = {
-  'Đọc vị bất kỳ ai': 'books/Doc vi bat ky ai.pdf'
-};
 
 export function getThumbnailCandidates(title) {
   const extList = ['jpg', 'jpeg', 'png', 'webp', 'avif'];
@@ -25,8 +20,12 @@ export function getThumbnailCandidates(title) {
   return names.flatMap((name) => extList.map((ext) => `thumbnail/${name}.${ext}`));
 }
 
-function getPdfPath(title) {
-  return pdfOverrides[title] ?? `books/${title}.pdf`;
+function getPdfCandidates(title) {
+  return getBookFileNameCandidates(title).map((name) => `books/${name}.pdf`);
+}
+
+function getReviewCandidates(title) {
+  return getBookFileNameCandidates(title).map((name) => `books/${name}.html`);
 }
 
 export function mapBooks(rawBooks) {
@@ -35,10 +34,23 @@ export function mapBooks(rawBooks) {
       category,
       title,
       author,
-      pdfFile: getPdfPath(title),
-      reviewFile: `reviews/${slugifyForFile(title)}.txt`
+      pdfCandidates: getPdfCandidates(title),
+      reviewCandidates: getReviewCandidates(title)
     }))
   );
+}
+
+export async function findAvailableFile(candidates) {
+  for (const src of candidates) {
+    try {
+      const response = await fetch(src);
+      if (response.ok) return src;
+    } catch {
+      // keep checking next candidate
+    }
+  }
+
+  return null;
 }
 
 export async function findAvailableImage(candidates) {
