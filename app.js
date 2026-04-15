@@ -40,6 +40,21 @@ function mapBooks(bookMap) {
 }
 
 const books = mapBooks(rawBooks);
+const coverCache = new Map();
+const coverObserverTargets = new WeakSet();
+const coverObserver = 'IntersectionObserver' in window
+  ? new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      observer.unobserve(entry.target);
+      if (entry.target.dataset.coverLoaded === 'true') return;
+      const file = entry.target.dataset.coverFile;
+      const title = entry.target.dataset.coverTitle;
+      if (!file || !title) return;
+      renderCover({ file, title }, entry.target);
+    });
+  }, { rootMargin: '220px 0px' })
+  : null;
 
 let activeCategory = 'Tất cả';
 let currentPdf = null;
@@ -138,20 +153,80 @@ async function enterReaderOnlyMode(book) {
   await renderPage(currentPage);
 }
 
-async function renderCover(file, mountEl) {
+function escapeHtml(text) {
+  return text
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function normalizeTextForPath(text) {
+  return text.normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D');
+}
+
+function getThumbnailCandidates(title) {
+  const extList = ['jpg', 'jpeg', 'png', 'webp', 'avif'];
+  const rawName = title.trim();
+  const normalizedName = normalizeTextForPath(rawName);
+  const names = [...new Set([rawName, normalizedName])];
+  return names.flatMap((name) => extList.map((ext) => `thumbnail/${name}.${ext}`));
+}
+
+function findAvailableImage(candidates) {
+  return Promise.any(candidates.map((src) => new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve(src);
+    image.onerror = () => reject(new Error(`Không tìm thấy ảnh: ${src}`));
+    image.src = src;
+  })));
+}
+
+function createFallbackCover() {
+  return '<img alt="Không thể tải bìa" src="data:image/svg+xml;charset=utf-8,' +
+    encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480"><rect width="100%" height="100%" fill="#1d4ed8"/><text x="50%" y="50%" text-anchor="middle" fill="white" font-family="Arial" font-size="28">PDF</text></svg>') + '">';
+}
+
+async function renderCover(book, mountEl) {
+  const cacheKey = `${book.title}::${book.file}`;
+  if (coverCache.has(cacheKey)) {
+    mountEl.innerHTML = coverCache.get(cacheKey);
+    mountEl.dataset.coverLoaded = 'true';
+    return;
+  }
+
   try {
-    const pdf = await pdfjsLib.getDocument(file).promise;
+    const thumbnailImage = await findAvailableImage(getThumbnailCandidates(book.title));
+    const markup = `<img alt="Bìa sách ${escapeHtml(book.title)}" src="${encodeURI(thumbnailImage)}">`;
+    coverCache.set(cacheKey, markup);
+    mountEl.innerHTML = markup;
+    mountEl.dataset.coverLoaded = 'true';
+    return;
+  } catch {
+    // Tiếp tục render thumbnail từ trang đầu PDF khi chưa có ảnh tĩnh.
+  }
+
+  try {
+    const pdf = await pdfjsLib.getDocument(book.file).promise;
     const page = await pdf.getPage(1);
     const viewport = page.getViewport({ scale: 0.45 });
     const c = document.createElement('canvas');
     c.width = Math.floor(viewport.width);
     c.height = Math.floor(viewport.height);
     await page.render({ canvasContext: c.getContext('2d'), viewport }).promise;
-    mountEl.innerHTML = '';
-    mountEl.appendChild(c);
+    const markup = c.outerHTML;
+    coverCache.set(cacheKey, markup);
+    mountEl.innerHTML = markup;
+    mountEl.dataset.coverLoaded = 'true';
   } catch {
-    mountEl.innerHTML = '<img alt="Không thể tải bìa" src="data:image/svg+xml;charset=utf-8,' +
-      encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480"><rect width="100%" height="100%" fill="#1d4ed8"/><text x="50%" y="50%" text-anchor="middle" fill="white" font-family="Arial" font-size="28">PDF</text></svg>') + '">';
+    const markup = createFallbackCover();
+    coverCache.set(cacheKey, markup);
+    mountEl.innerHTML = markup;
+    mountEl.dataset.coverLoaded = 'true';
   }
 }
 
@@ -197,7 +272,18 @@ function renderBooks() {
 
     card.querySelector('.btn.primary').addEventListener('click', () => openBook(book));
     const coverWrap = card.querySelector('.cover-wrap');
-    renderCover(book.file, coverWrap);
+    coverWrap.dataset.coverTitle = book.title;
+    coverWrap.dataset.coverFile = book.file;
+
+    if (coverObserver) {
+      if (!coverObserverTargets.has(coverWrap)) {
+        coverObserver.observe(coverWrap);
+        coverObserverTargets.add(coverWrap);
+      }
+    } else {
+      renderCover(book, coverWrap);
+    }
+
     bookGrid.appendChild(card);
   });
 }
