@@ -1,4 +1,5 @@
 const DEFAULT_ZOOM = 100;
+const MOBILE_FIXED_ZOOM = 'page-width';
 const ZOOM_STEP = 10;
 const MIN_ZOOM = 50;
 const MAX_ZOOM = 250;
@@ -31,20 +32,24 @@ export function createPdfReader({
     pdfPath: '',
     page: 1,
     zoom: DEFAULT_ZOOM,
+    isFixedZoom: false,
   };
 
   function render() {
     if (!state.pdfPath) return;
     frame.src = buildPdfUrl(state.pdfPath, state.page, state.zoom);
     pageLabel.textContent = `Trang ${state.page}`;
-    zoomLabel.textContent = `${state.zoom}%`;
+    zoomLabel.textContent = state.isFixedZoom ? 'Fit' : `${state.zoom}%`;
     prevBtn.disabled = state.page <= 1;
+    zoomOutBtn.disabled = state.isFixedZoom;
+    zoomInBtn.disabled = state.isFixedZoom;
   }
 
-  function openInline(pdfPath) {
+  function openInline(pdfPath, options = {}) {
     state.pdfPath = pdfPath;
     state.page = 1;
-    state.zoom = DEFAULT_ZOOM;
+    state.isFixedZoom = Boolean(options.fixedZoom);
+    state.zoom = state.isFixedZoom ? MOBILE_FIXED_ZOOM : DEFAULT_ZOOM;
 
     frame.hidden = false;
     nav.hidden = false;
@@ -64,7 +69,7 @@ export function createPdfReader({
       return 'new-page';
     }
 
-    openInline(pdfPath);
+    openInline(pdfPath, { fixedZoom: true });
     return 'inline';
   }
 
@@ -72,6 +77,7 @@ export function createPdfReader({
     state.pdfPath = '';
     state.page = 1;
     state.zoom = DEFAULT_ZOOM;
+    state.isFixedZoom = false;
     frame.src = '';
     frame.hidden = true;
     nav.hidden = true;
@@ -93,17 +99,20 @@ export function createPdfReader({
   });
 
   zoomOutBtn.addEventListener('click', () => {
+    if (state.isFixedZoom) return;
     state.zoom = clamp(state.zoom - ZOOM_STEP, MIN_ZOOM, MAX_ZOOM);
     render();
   });
 
   zoomInBtn.addEventListener('click', () => {
+    if (state.isFixedZoom) return;
     state.zoom = clamp(state.zoom + ZOOM_STEP, MIN_ZOOM, MAX_ZOOM);
     render();
   });
 
   return {
     open,
+    openInline,
     close,
   };
 }
