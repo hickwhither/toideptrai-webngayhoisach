@@ -1,36 +1,21 @@
 import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.min.mjs';
+import { books } from './data/books/index.js';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.worker.min.mjs';
-
-const books = [
-  {
-    title: 'Competitive Programming 3',
-    author: 'Steven Halim et al.',
-    category: 'Lập trình',
-    file: 'books/Competitive_Programming_3.pdf'
-  },
-  {
-    title: '13 Công Thức Tính Tổng Dãy Số',
-    author: 'Sưu tầm',
-    category: 'Toán học',
-    file: 'books/13-cong-thuc-tinh-tong-day-so.pdf'
-  }
-];
 
 const categoryBar = document.getElementById('category-bar');
 const bookGrid = document.getElementById('book-grid');
 const empty = document.getElementById('empty');
 const reader = document.getElementById('reader');
-const readerTitle = document.getElementById('reader-title');
 const canvas = document.getElementById('reader-canvas');
 const ctx = canvas.getContext('2d');
 const pageInfo = document.getElementById('page-info');
-const openNewTab = document.getElementById('open-new-tab');
 const closeReaderBtn = document.getElementById('close-reader');
 const prevBtn = document.getElementById('prev-page');
 const nextBtn = document.getElementById('next-page');
 const zoomInBtn = document.getElementById('zoom-in');
 const zoomOutBtn = document.getElementById('zoom-out');
+const themeToggleBtn = document.getElementById('theme-toggle');
 
 let activeCategory = 'Tất cả';
 let currentPdf = null;
@@ -42,6 +27,20 @@ const categories = ['Tất cả', ...new Set(books.map((b) => b.category))];
 
 function fitScaleForMobile(viewportWidth) {
   return window.innerWidth <= 768 ? Math.max(window.innerWidth / viewportWidth - 0.08, 0.55) : 1;
+}
+
+function applyTheme(theme) {
+  document.body.dataset.theme = theme;
+  const isDark = theme === 'dark';
+  themeToggleBtn.textContent = isDark ? '☀️ Light mode' : '🌙 Dark mode';
+  localStorage.setItem('theme', theme);
+}
+
+function initTheme() {
+  const storedTheme = localStorage.getItem('theme');
+  const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const initialTheme = storedTheme || (systemPrefersDark ? 'dark' : 'light');
+  applyTheme(initialTheme);
 }
 
 async function renderPage(pageNumber = 1) {
@@ -71,8 +70,6 @@ async function openBook(book) {
   currentPage = 1;
   scale = 1;
   reader.hidden = false;
-  readerTitle.textContent = `Đang đọc: ${book.title}`;
-  openNewTab.href = book.file;
 
   currentPdf = await pdfjsLib.getDocument(book.file).promise;
   await renderPage(currentPage);
@@ -131,7 +128,7 @@ function renderBooks() {
         <p class="meta">${book.author} · ${book.category}</p>
         <div class="actions">
           <button type="button" class="btn primary">Đọc ngay</button>
-          <a class="btn" href="${book.file}" target="_blank" rel="noopener noreferrer">Mở PDF</a>
+          <a class="btn" href="${book.file}" download>Tải xuống</a>
         </div>
       </div>
     `;
@@ -171,9 +168,15 @@ closeReaderBtn.addEventListener('click', () => {
   reader.hidden = true;
 });
 
+themeToggleBtn.addEventListener('click', () => {
+  const nextTheme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+  applyTheme(nextTheme);
+});
+
 window.addEventListener('resize', async () => {
   if (currentBook) await renderPage(currentPage);
 });
 
+initTheme();
 renderCategoryBar();
 renderBooks();
