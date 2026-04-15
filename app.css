@@ -212,3 +212,80 @@ body {
   .hero-top { align-items: stretch; }
   .book-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+.pdf-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 10px 12px;
+  border-top: 1px solid var(--line);
+  background: color-mix(in oklab, var(--card) 94%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.pdf-nav[hidden] {
+  display: none !important;
+}
+
+.nav-status {
+  min-width: 72px;
+  text-align: center;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.reader:has(.pdf-nav.active) .reader-content {
+  padding-bottom: 88px;
+}
+
+.pdf-standalone {
+  width: min(1360px, calc(100% - 24px));
+  margin: 16px auto;
+}
+
+.pdf-standalone-header {
+  margin-bottom: 12px;
+}
+
+.pdf-standalone-header h1 {
+  margin: 0;
+  font-size: clamp(1.2rem, 2.4vw, 1.8rem);
+}
+
+.pdf-frame.standalone {
+  min-height: calc(100vh - 180px);
+}
+
+@media (max-width: 768px) {
+  .pdf-nav {
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  }
+
+  .pdf-nav .btn {
+    white-space: nowrap;
+  }
+
+  .reader:has(.pdf-nav.active) .reader-content {
+    padding-bottom: 96px;
+  }
+}
+
+.reader-close-wrap {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+}
+
+.reader-close-wrap[hidden] {
+  display: none !important;
+}

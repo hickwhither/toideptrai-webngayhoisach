@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trình đọc PDF</title>
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <main class="pdf-standalone">
+    <header class="pdf-standalone-header">
+      <h1 id="reader-title">Trình đọc PDF</h1>
+      <p id="reader-source" class="meta"></p>
+    </header>
+
+    <iframe id="pdf-frame" class="pdf-frame standalone" title="PDF viewer"></iframe>
+
+    <div id="pdf-nav" class="pdf-nav active">
+      <button id="close-reader" class="btn" type="button">Đóng</button>
+      <button id="prev-page" class="btn" type="button">◀ Trang trước</button>
+      <span id="page-label" class="nav-status">Trang 1</span>
+      <button id="next-page" class="btn" type="button">Trang sau ▶</button>
+      <button id="zoom-out" class="btn" type="button">A-</button>
+      <span id="zoom-label" class="nav-status">100%</span>
+      <button id="zoom-in" class="btn" type="button">A+</button>
+    </div>
+  </main>
+
+  <script type="module">
+    import { mountStandalonePdfReader } from './js/pdf-reader.js';
+
+    mountStandalonePdfReader({
+      frame: document.getElementById('pdf-frame'),
+      closeBtn: document.getElementById('close-reader'),
+      prevBtn: document.getElementById('prev-page'),
+      nextBtn: document.getElementById('next-page'),
+      zoomOutBtn: document.getElementById('zoom-out'),
+      zoomInBtn: document.getElementById('zoom-in'),
+      pageLabel: document.getElementById('page-label'),
+      zoomLabel: document.getElementById('zoom-label'),
+      title: document.getElementById('reader-title'),
+      source: document.getElementById('reader-source'),
+    });
+  </script>
+</body>
+</html>
