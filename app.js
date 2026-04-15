@@ -29,6 +29,10 @@ function fitScaleForMobile(viewportWidth) {
   return window.innerWidth <= 768 ? Math.max(window.innerWidth / viewportWidth - 0.08, 0.55) : 1;
 }
 
+function isDesktop() {
+  return window.innerWidth > 768;
+}
+
 function applyTheme(theme) {
   document.body.dataset.theme = theme;
   const isDark = theme === 'dark';
@@ -38,8 +42,7 @@ function applyTheme(theme) {
 
 function initTheme() {
   const storedTheme = localStorage.getItem('theme');
-  const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const initialTheme = storedTheme || (systemPrefersDark ? 'dark' : 'light');
+  const initialTheme = storedTheme || 'light';
   applyTheme(initialTheme);
 }
 
@@ -66,6 +69,11 @@ async function renderPage(pageNumber = 1) {
 }
 
 async function openBook(book) {
+  if (isDesktop()) {
+    window.open(book.file, '_blank', 'noopener,noreferrer');
+    return;
+  }
+
   currentBook = book;
   currentPage = 1;
   scale = 1;
@@ -174,7 +182,7 @@ themeToggleBtn.addEventListener('click', () => {
 });
 
 window.addEventListener('resize', async () => {
-  if (currentBook) await renderPage(currentPage);
+  if (currentBook && !reader.hidden) await renderPage(currentPage);
 });
 
 initTheme();
