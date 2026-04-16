@@ -18,7 +18,7 @@ function getBookFileNameCandidates(title) {
 }
 
 export function getThumbnailCandidates(title) {
-  const extList = ['jpg'];
+  const extList = ['jpg', 'webp'];
   const rawName = title.trim();
   const normalizedName = normalizeTextForPath(rawName);
   const names = [...new Set([rawName, normalizedName])];
