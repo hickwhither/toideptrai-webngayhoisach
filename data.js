@@ -1,8 +1,8 @@
 export const books = {
   'Nghệ thuật Sống & Giao tiếp': [
-    ['Đắc Nhâm Tâm', 'Dale Carnegie'],
+    ['Đắc Nhân Tâm', 'Dale Carnegie'],
     ['Đọc vị bất kỳ ai', 'David J. Lieberman'],
-    ['Quảng gánh lo đi và vui sống', 'Dale Carnegie']
+    ['Quẳng gánh lo đi và vui sống', 'Dale Carnegie']
   ],
   'Tư duy Thành công & Phát triển Bản thân': [
     ['Dám nghĩ lớn', 'David J. Schwartz'],
